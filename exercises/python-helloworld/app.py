@@ -1,17 +1,19 @@
 from flask import Flask
 from flask import json
-from werkzeug.wrappers import response
+import logging
+##from werkzeug.wrappers import response
 
 app = Flask(__name__)
 
 @app.route('/status')
-def status():
+def healthcheck():
     response = app.response_class(
         response=json.dumps({"result":"OK - Healthy"}),
         status=200,
         mimetype='application/json'
     )
-    
+    ##logging function 
+    app.logger.info('Status request successful')
     return response
 
 @app.route('/metrics')
@@ -21,12 +23,20 @@ def metrics():
         status=200,
         mimetype='application/json'
     )
-    
+    ##logging function
+    app.logger.info('Metrics request successfull') 
     return response
 
 @app.route("/")
 def hello():
+    ## logging function 
+    app.logger.info('Main request successfull')
+    
     return "Hello World!"
 
 if __name__ == "__main__":
+    
+    ## streaming logs to a file 
+    logging.basicConfig(filename='app.log',level=logging.DEBUG)
+    
     app.run(host='0.0.0.0')
